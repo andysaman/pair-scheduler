@@ -1,0 +1,25 @@
+{
+  "name": "pair-scheduler",
+  "version": "1.0.0",
+  "description": "Calculate a schedule for pair programming in teams.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andysaman/pair-scheduler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andysaman/pair-scheduler/issues"
+  },
+  "homepage": "https://github.com/andysaman/pair-scheduler#readme",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./utils/arrayUtilities": "./utils/arrayUtilities.js"
+  }
+}

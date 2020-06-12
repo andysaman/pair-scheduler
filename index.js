@@ -1,43 +1,17 @@
-const arrayToKeys = (arr) => {
-  return arr.reduce(function (acc, curr) {
-    acc[curr] = [];
-    return acc;
-  }, {});
-};
+import {
+  arrayToKeys,
+  deleteFromObject,
+  findSmallestKeyArray,
+  groupBy,
+  shuffleArray,
+} from "./utils/arrayUtils.js";
 
-const groupBy = (array, key, initialObj) => {
-  return array.reduce((result, currentValue) => {
-    (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
-    return result;
-  }, initialObj);
-};
+import { showLog } from "./reports/output.js";
 
-const deleteFromObject = (object, deleteList) => {
-  return deleteList.forEach((target) => delete object[target]);
-};
-
-const findSmallestKeyArray = (list, object) => {
-  let lowestCount;
-  let smallest;
-  list.forEach((item) => {
-    if (object[item] === undefined) return;
-    if (lowestCount === undefined || object[item].length < lowestCount) {
-      lowestCount = object[item].length;
-      smallest = item;
-    }
-  });
-  return smallest;
-};
-
-const shuffleArray = (arr) => {
-  // Fisher-Yates Algorithm
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    const temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-  }
-};
+const DEFAULT_DAILY_SESSIONS = 1;
+const DEFAULT_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const DEFAULT_WEEKS = 2;
+const DEFAULT_ROLES = ["Driver", "Navigator"];
 
 const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) => {
   // Find the member with the least assignments for this role
@@ -56,10 +30,10 @@ const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) 
 
 const generatePairSessions = (
   team = [],
-  roles = [],
-  weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-  totalWeeks = 2,
-  memberMaxDailySessions = 1
+  roles = DEFAULT_ROLES,
+  weekdays = DEFAULT_WEEKDAYS,
+  totalWeeks = DEFAULT_WEEKS,
+  memberMaxDailySessions = DEFAULT_DAILY_SESSIONS
 ) => {
   const sessionList = [];
   let shuffledTeam = Array.from(team);
@@ -93,30 +67,12 @@ const generatePairSessions = (
   return sessionList;
 };
 
-// Calculate the sessions
-const roles = ["Driver", "Navigator"];
-const sessionPlan = generateAllSessions(["Cynthia", "Frank", "Jimal", "Cory"], roles);
+// Calculate the sessions for our team
+// We are using limited weekdays
+const myTeam = ["Kevin", "Sam", "Pablo", "Piyush", "Raviraj", "Andy"];
+const myWeekdays = ["Tuesday", "Wednesday", "Thursday"];
+const sessionPlan = generatePairSessions(myTeam, DEFAULT_ROLES, myWeekdays, DEFAULT_WEEKS);
 
-// Format the output report
-let currentDay = "";
-let currentSession = "";
-let sessionString = "";
-let sessionCount = 0;
-sessionPlan.forEach((sessionItem) => {
-  if (sessionItem.day != currentDay) {
-    currentDay = sessionItem.day;
-    console.log(currentDay + ": ");
-  }
-  if (sessionItem.sessionId != currentSession) {
-    currentSession = sessionItem.sessionId;
-    sessionString = " * ";
-    sessionCount = 0;
-  } else {
-    sessionString += " <-> ";
-  }
-  sessionString += sessionItem.role + ": " + sessionItem.member;
-  sessionCount++;
-  if (sessionCount === roles.length) {
-    console.log(sessionString);
-  }
-});
+// Display the output
+console.table(sessionPlan);
+showLog(DEFAULT_ROLES, sessionPlan);
