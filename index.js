@@ -14,6 +14,7 @@ const DEFAULT_ROLES = ["Driver", "Navigator"];
 const DEFAULT_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const DEFAULT_WEEKS = 2;
 const DEFAULT_DAILY_SESSIONS = 1;
+const DEFAULT_INTRADAY_SHUFFLE = false;
 
 const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) => {
   // Find the member with the least assignments for this role
@@ -30,7 +31,14 @@ const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) 
   return findSmallestKeyArray(team, roleHistoryByMember);
 };
 
-const generatePairSessions = (team, roles, weekdays, totalWeeks, memberDailySessions) => {
+const generatePairSessions = (
+  team,
+  roles,
+  weekdays,
+  totalWeeks,
+  memberDailySessions,
+  enableIntradayShuffle
+) => {
   const sessionList = [];
   let shuffledTeam = Array.from(team);
 
@@ -50,6 +58,7 @@ const generatePairSessions = (team, roles, weekdays, totalWeeks, memberDailySess
           pastMembers.push(memberForRole);
           if (pastMembers.length === shuffledTeam.length) {
             pastMembers = [];
+            if (enableIntradayShuffle) shuffleArray(shuffledTeam);
           }
           sessionList.push({ sessionId: sessionId, day: day, role: role, member: memberForRole });
         });
@@ -71,8 +80,16 @@ try {
   const myWeekdays = configuration.weekdays || DEFAULT_WEEKDAYS;
   const myWeeks = configuration.weeks || DEFAULT_WEEKS;
   const myDailySessions = configuration.dailySessions || DEFAULT_DAILY_SESSIONS;
+  const myIntradayShuffle = configuration.intradayShuffle || DEFAULT_INTRADAY_SHUFFLE;
 
-  const sessionPlan = generatePairSessions(myTeam, myRoles, myWeekdays, myWeeks, myDailySessions);
+  const sessionPlan = generatePairSessions(
+    myTeam,
+    myRoles,
+    myWeekdays,
+    myWeeks,
+    myDailySessions,
+    myIntradayShuffle
+  );
 
   // Display the output
   showLog(myRoles, sessionPlan);

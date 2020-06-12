@@ -29,4 +29,9 @@ weekdays:
   - Thursday
 weeks: 2
 dailySessions: 1
+intradayShuffle: true
 ```
+
+## Settings:
+
+- _intradayShuffle_ - Automatically shuffle the team list multiple times per day. Without intradayShuffle, the same team members will be paired with each other multiple times per day.
