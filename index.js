@@ -42,18 +42,16 @@ const generatePairSessions = (team, roles, weekdays, totalWeeks, memberMaxDailyS
       // Calculate the sessions per day based on team size and maximums set. Track assignments per day.
       const sessionsPerDay =
         Math.floor(shuffledTeam.length / roles.length) * memberMaxDailySessions;
-      const dailyMembers = [];
+      let pastMembers = [];
       for (let j = 0; j < sessionsPerDay; j++) {
         const sessionId = "W" + i + "D" + dayIndex + "S" + j;
         roles.forEach((role) => {
-          const memberForRole = getNextForRole(
-            shuffledTeam,
-            roles,
-            sessionList,
-            role,
-            dailyMembers
-          );
-          dailyMembers.push(memberForRole);
+          const memberForRole = getNextForRole(shuffledTeam, roles, sessionList, role, pastMembers);
+          // Add this assignment to the list of already assigned; reset if full
+          pastMembers.push(memberForRole);
+          if (pastMembers.length === shuffledTeam.length) {
+            pastMembers = [];
+          }
           sessionList.push({ sessionId: sessionId, day: day, role: role, member: memberForRole });
         });
       }
