@@ -1,0 +1,16 @@
+team:
+  - Andy
+  - Kevin
+  - Pablo
+  - Piyush
+  - Raviraj
+  - Sam
+roles:
+  - Driver
+  - Navigator
+weekdays:
+  - Tuesday
+  - Wednesday
+  - Thursday
+weeks: 2
+dailySessions: 1

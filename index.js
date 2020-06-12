@@ -1,3 +1,5 @@
+import yaml from "js-yaml";
+import fs from "fs";
 import {
   arrayToKeys,
   deleteFromObject,
@@ -5,13 +7,13 @@ import {
   groupBy,
   shuffleArray,
 } from "./utils/arrayUtils.js";
-
 import { showLog } from "./reports/output.js";
 
-const DEFAULT_DAILY_SESSIONS = 1;
+const DEFAULT_TEAM = ["Teammate #1", "Teammate #2", "Teammate #3"];
+const DEFAULT_ROLES = ["Driver", "Navigator"];
 const DEFAULT_WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const DEFAULT_WEEKS = 2;
-const DEFAULT_ROLES = ["Driver", "Navigator"];
+const DEFAULT_DAILY_SESSIONS = 1;
 
 const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) => {
   // Find the member with the least assignments for this role
@@ -28,13 +30,7 @@ const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) 
   return findSmallestKeyArray(team, roleHistoryByMember);
 };
 
-const generatePairSessions = (
-  team = [],
-  roles = DEFAULT_ROLES,
-  weekdays = DEFAULT_WEEKDAYS,
-  totalWeeks = DEFAULT_WEEKS,
-  memberMaxDailySessions = DEFAULT_DAILY_SESSIONS
-) => {
+const generatePairSessions = (team, roles, weekdays, totalWeeks, memberMaxDailySessions) => {
   const sessionList = [];
   let shuffledTeam = Array.from(team);
 
@@ -67,12 +63,22 @@ const generatePairSessions = (
   return sessionList;
 };
 
-// Calculate the sessions for our team
-// We are using limited weekdays
-const myTeam = ["Kevin", "Sam", "Pablo", "Piyush", "Raviraj", "Andy"];
-const myWeekdays = ["Tuesday", "Wednesday", "Thursday"];
-const sessionPlan = generatePairSessions(myTeam, DEFAULT_ROLES, myWeekdays, DEFAULT_WEEKS);
+// // Calculate the sessions for our team
+// Get document, or throw exception on error
+try {
+  // Load the configuration
+  const configuration = yaml.safeLoad(fs.readFileSync("./config.yml", "utf8"));
 
-// Display the output
-console.table(sessionPlan);
-showLog(DEFAULT_ROLES, sessionPlan);
+  const myTeam = configuration.team || DEFAULT_TEAM;
+  const myRoles = configuration.roles || DEFAULT_ROLES;
+  const myWeekdays = configuration.weekdays || DEFAULT_WEEKDAYS;
+  const myWeeks = configuration.weeks || DEFAULT_WEEKS;
+  const myDailySessions = configuration.dailySessions || DEFAULT_DAILY_SESSIONS;
+
+  const sessionPlan = generatePairSessions(myTeam, myRoles, myWeekdays, myWeeks, myDailySessions);
+
+  // Display the output
+  showLog(myRoles, sessionPlan);
+} catch (e) {
+  console.log(e);
+}
