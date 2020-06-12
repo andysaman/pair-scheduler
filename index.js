@@ -30,7 +30,7 @@ const getNextForRole = (team, roles, memberRoleHistory, role, memberIgnoreList) 
   return findSmallestKeyArray(team, roleHistoryByMember);
 };
 
-const generatePairSessions = (team, roles, weekdays, totalWeeks, memberMaxDailySessions) => {
+const generatePairSessions = (team, roles, weekdays, totalWeeks, memberDailySessions) => {
   const sessionList = [];
   let shuffledTeam = Array.from(team);
 
@@ -39,9 +39,8 @@ const generatePairSessions = (team, roles, weekdays, totalWeeks, memberMaxDailyS
       // Randomize the member selection once each day
       shuffleArray(shuffledTeam);
 
-      // Calculate the sessions per day based on team size and maximums set. Track assignments per day.
-      const sessionsPerDay =
-        Math.floor(shuffledTeam.length / roles.length) * memberMaxDailySessions;
+      // Calculate the sessions per day based on team size. Track assignments per day.
+      const sessionsPerDay = Math.floor(shuffledTeam.length / roles.length) * memberDailySessions;
       let pastMembers = [];
       for (let j = 0; j < sessionsPerDay; j++) {
         const sessionId = "W" + i + "D" + dayIndex + "S" + j;
