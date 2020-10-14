@@ -35,3 +35,8 @@ intradayShuffle: true
 ## Settings:
 
 - _intradayShuffle_ - Automatically shuffle the team list multiple times per day. Without intradayShuffle, the same team members will be paired with each other multiple times per day.
+
+
+## Running: 
+
+To run the application, first install dependencies with `npm i`, then start the application with `npm start`. 
